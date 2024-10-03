@@ -140,7 +140,7 @@ def get_car(license_plate, vehicle_track_ids):
     Returns:
         tuple: Tuple containing the vehicle coordinates (x1, y1, x2, y2) and ID.
     """
-    x1, y1, x2, y2, score, class_id = license_plate
+    x1, y1, x2, y2, score, class_id = (*license_plate, None)
 
     foundIt = False
     for j in range(len(vehicle_track_ids)):
