@@ -10,10 +10,10 @@ mot_tracker = Sort()
 
 # Carregar os modelos
 coco_model = YOLO('yolov8n.pt')
-license_plate_detector = YOLO('C:\\Users\\suporte2\\Desktop\\pesos_placas_yolov8\\weights\\best.pt')
+license_plate_detector = YOLO("C:\\Users\\suporte2\\Desktop\\train3\\weights\\best.pt")
 
 # Carregar vídeo
-cap = cv2.VideoCapture('C:\\Users\\suporte2\\Desktop\\moto.mp4')
+cap = cv2.VideoCapture('C:\\Users\\suporte2\\Desktop\\video.mp4')
 
 vehicles = [2, 3, 5, 7]  # Definir as classes de veículos (ex: carro, caminhão, etc.)
 min_confidence = 0.2  # Confiança mínima para detecção
@@ -25,8 +25,8 @@ while ret:
     frame_nmr += 1
     ret, frame = cap.read()
     if ret:
-        if frame_nmr > 100:
-              break
+        # if frame_nmr > 100:
+        #       break
         results[frame_nmr] = {}
 
         # Detecção de veículos usando o modelo de veículos
