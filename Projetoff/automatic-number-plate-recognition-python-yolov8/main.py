@@ -10,10 +10,10 @@ mot_tracker = Sort()
 
 # Carregar os modelos
 coco_model = YOLO('yolov8n.pt')
-license_plate_detector = YOLO("C:\\Users\\suporte2\\Desktop\\train3\\weights\\best.pt")
+license_plate_detector = YOLO("C:\\Users\\Pichau\\Desktop\\train3\\weights\\best.pt")
 
 # Carregar vídeo
-cap = cv2.VideoCapture('C:\\Users\\suporte2\\Desktop\\video.mp4')
+cap = cv2.VideoCapture('C:\\Users\\Pichau\\Desktop\\corte.mp4')
 
 vehicles = [2, 3, 5, 7]  # Definir as classes de veículos (ex: carro, caminhão, etc.)
 min_confidence = 0.2  # Confiança mínima para detecção
@@ -25,7 +25,7 @@ while ret:
     frame_nmr += 1
     ret, frame = cap.read()
     if ret:
-        # if frame_nmr > 100:
+        # if frame_nmr > 1500:
         #       break
         results[frame_nmr] = {}
 
@@ -90,4 +90,4 @@ while ret:
 
 # Escrever os resultados no CSV
 print("Resultados finais antes de salvar no CSV:", results)
-write_csv(results, 'C:\\Users\\suporte2\\Desktop\\Projetoff\\test.csv')
+write_csv(results, 'C:\\Users\\Pichau\\Desktop\\Projetoff\\test.csv')
