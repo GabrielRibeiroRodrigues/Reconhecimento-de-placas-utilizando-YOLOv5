@@ -1,0 +1,13 @@
+Descobrir o porque da confiança das placas tipo mercosul diminuiu
+Gravar no CSV somente o maior license_number_score de cada car_id
+Melhorar percentual de identificação de veículos (treinar dnv ? )
+Testes Reais com a câmera do celular
+Revisão de Desempenho do Modelo
+Integrar isso com o Django para criação de uma interface básica (Placa, Proprietário)
+Parar de usar arquivos CSV e passar tudo para algum banco de dados (sqlite ?)
+Desenvolver uma interface que mostre os frames da câmera em tempo real na interface
+Feedback de Usuários
+Verificar se precisa de um treinamento final dos modelos
+Testes Reais com a câmera do celular
+Revisão de Desempenho do Modelo
+Definir Especificações da Câmera
