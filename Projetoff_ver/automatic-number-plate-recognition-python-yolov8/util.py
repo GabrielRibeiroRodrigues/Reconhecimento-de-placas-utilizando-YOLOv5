@@ -19,11 +19,11 @@ dict_int_to_char = {'0': 'O',
                     '6': 'G',
                     '5': 'S'}
 
-#O formato que eu escrevo no CSV
+
 def write_csv(results, output_path):
     with open(output_path, 'w') as f:
-        f.write('{},{},{},{},{},{},{}\n'.format('frame_nmr', 'car_id', 'car_bbox',
-                                                'license_plate_bbox', 'license_plate_bbox_score', 'license_number',
+        f.write('{},{},{},{},{}\n'.format('frame_nmr', 'car_id',
+                                                'license_plate_bbox_score', 'license_number',
                                                 'license_number_score'))
 
         for frame_nmr in results.keys():
@@ -32,18 +32,9 @@ def write_csv(results, output_path):
                 if 'car' in results[frame_nmr][car_id].keys() and \
                    'placa' in results[frame_nmr][car_id].keys() and \
                    'text' in results[frame_nmr][car_id]['placa'].keys():
-                    f.write('{},{},{},{},{},{},{}\n'.format(frame_nmr,
+                    f.write('{},{},{},{},{}\n'.format(frame_nmr,
                                                             car_id,
-                                                            '[{} {} {} {}]'.format(
-                                                                results[frame_nmr][car_id]['car']['bbox'][0],
-                                                                results[frame_nmr][car_id]['car']['bbox'][1],
-                                                                results[frame_nmr][car_id]['car']['bbox'][2],
-                                                                results[frame_nmr][car_id]['car']['bbox'][3]),
-                                                            '[{} {} {} {}]'.format(
-                                                                results[frame_nmr][car_id]['placa']['bbox'][0],
-                                                                results[frame_nmr][car_id]['placa']['bbox'][1],
-                                                                results[frame_nmr][car_id]['placa']['bbox'][2],
-                                                                results[frame_nmr][car_id]['placa']['bbox'][3]),
+                                                            
                                                             results[frame_nmr][car_id]['placa']['bbox_score'],
                                                             results[frame_nmr][car_id]['placa']['text'],
                                                             results[frame_nmr][car_id]['placa']['text_score'])
@@ -160,12 +151,12 @@ def load_registered_plates(csv_path):
     """Carrega as placas cadastradas de um arquivo CSV."""
     try:
         registered_df = pd.read_csv(csv_path)
-        return registered_df['placa'].tolist()  # Supondo que a coluna de placas se chama 'license_plate'
+        return registered_df['placa'].tolist()  # A coluna da planilha se chama placa
     except Exception as e:
         print(f"Erro ao carregar o arquivo: {e}")
         return []
 
-# Passo 2: Verificar se a placa detectada está cadastrada
+
 def check_plate_registration(plate_text, placas_registradas):
     """Verifica se a placa detectada está cadastrada."""
     return plate_text in placas_registradas

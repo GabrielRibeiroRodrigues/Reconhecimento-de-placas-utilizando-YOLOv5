@@ -2,7 +2,7 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-import keyboard  # Para detectar a tecla pressionada
+import keyboard  
 
 from sort.sort import Sort
 from util import get_car, read_license_plate, write_csv, check_plate_registration, load_registered_plates
@@ -18,10 +18,12 @@ detector_carro = YOLO('yolov8n.pt')
 detector_placa = YOLO("C:\\Users\\12265587630\\Desktop\\train3\\weights\\best.pt")
 # Carregar vídeo
 cap = cv2.VideoCapture("C:\\Users\\12265587630\\Desktop\\teste.mp4")
+# 0: person 1: bicycle 2: car 3: motorcycle 4: airplane 5: bus 6: train 7: truck 8: boat 9: traffic light 10 : fire hydrant
 
 veiculos = [2, 3, 5, 7]  # Definir as classes de veículos (ex: carro, caminhão, etc.)
 confianca_detectar_carro = 0.2  # Confiança mínima para detecção
 confianca_gravar_texto = 0.2
+maior_confianca = 0.0
 frame_nmr = -1
 ret = True
 
@@ -34,7 +36,7 @@ while ret:
     frame_nmr += 1
     ret, frame = cap.read()  # Lê um frame do vídeo
     if not ret:  # Verifica se a leitura do frame foi bem-sucedida
-        print("Não foi possível ler o frame. Encerrando.")
+        print("Não foi possível ler o frame.")
         break
 
     results[frame_nmr] = {}
@@ -85,7 +87,8 @@ while ret:
                 license_plate_text, license_plate_text_score = read_license_plate(license_plate_crop_thresh)
                 print(f"Texto da placa detectado: {license_plate_text}, Confiança: {license_plate_text_score}")
 
-                if license_plate_text is not None and license_plate_text_score > confianca_gravar_texto:
+                if license_plate_text is not None and license_plate_text_score > confianca_gravar_texto and license_plate_text_score > maior_confianca :
+                    maior_confianca = license_plate_text_score
                     # Verificar se a placa já está registrada
                     if license_plate_text in placas_registradas:
                         print(f"A placa {license_plate_text} já está registrada.")
@@ -125,17 +128,15 @@ while ret:
         rect = plt.Rectangle((x1, y1), x2 - x1, y2 - y1, fill=False, color='red', linewidth=2)
         ax.add_patch(rect)
 
-    plt.pause(0.001)  # Pausa para atualizar a visualização
+    plt.pause(0.00001)  # Pausa para atualizar a visualização
 
     # Verificar se a tecla 'q' foi pressionada
     if keyboard.is_pressed('q'):
-        print("Gravando dados e encerrando...")
         break  # Encerra o loop
 
-# Escrever os resultados no CSV
-print("Resultados finais antes de salvar no CSV:", results)
+
 write_csv(results, 'C:\\Users\\12265587630\\Desktop\\Projetoff_ver\\test.csv')
 
-# Fechar o vídeo
+
 cap.release()
 plt.close(fig)
