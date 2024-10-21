@@ -30,8 +30,8 @@ def write_csv(results, output_path):
             for car_id in results[frame_nmr].keys():
                 print(results[frame_nmr][car_id])
                 if 'car' in results[frame_nmr][car_id].keys() and \
-                   'license_plate' in results[frame_nmr][car_id].keys() and \
-                   'text' in results[frame_nmr][car_id]['license_plate'].keys():
+                   'placa' in results[frame_nmr][car_id].keys() and \
+                   'text' in results[frame_nmr][car_id]['placa'].keys():
                     f.write('{},{},{},{},{},{},{}\n'.format(frame_nmr,
                                                             car_id,
                                                             '[{} {} {} {}]'.format(
@@ -40,13 +40,13 @@ def write_csv(results, output_path):
                                                                 results[frame_nmr][car_id]['car']['bbox'][2],
                                                                 results[frame_nmr][car_id]['car']['bbox'][3]),
                                                             '[{} {} {} {}]'.format(
-                                                                results[frame_nmr][car_id]['license_plate']['bbox'][0],
-                                                                results[frame_nmr][car_id]['license_plate']['bbox'][1],
-                                                                results[frame_nmr][car_id]['license_plate']['bbox'][2],
-                                                                results[frame_nmr][car_id]['license_plate']['bbox'][3]),
-                                                            results[frame_nmr][car_id]['license_plate']['bbox_score'],
-                                                            results[frame_nmr][car_id]['license_plate']['text'],
-                                                            results[frame_nmr][car_id]['license_plate']['text_score'])
+                                                                results[frame_nmr][car_id]['placa']['bbox'][0],
+                                                                results[frame_nmr][car_id]['placa']['bbox'][1],
+                                                                results[frame_nmr][car_id]['placa']['bbox'][2],
+                                                                results[frame_nmr][car_id]['placa']['bbox'][3]),
+                                                            results[frame_nmr][car_id]['placa']['bbox_score'],
+                                                            results[frame_nmr][car_id]['placa']['text'],
+                                                            results[frame_nmr][car_id]['placa']['text_score'])
                             )
         f.close()
 
@@ -139,8 +139,8 @@ def read_license_plate(license_plate_crop):
     return None, None
 
 
-def get_car(license_plate, vehicle_track_ids):
-    x1, y1, x2, y2, score, class_id = (*license_plate, None)
+def get_car(placa, vehicle_track_ids):
+    x1, y1, x2, y2, score, class_id = (*placa, None)
 
     foundIt = False
     for j in range(len(vehicle_track_ids)):
@@ -160,14 +160,14 @@ def load_registered_plates(csv_path):
     """Carrega as placas cadastradas de um arquivo CSV."""
     try:
         registered_df = pd.read_csv(csv_path)
-        return registered_df['license_plate'].tolist()  # Supondo que a coluna de placas se chama 'license_plate'
+        return registered_df['placa'].tolist()  # Supondo que a coluna de placas se chama 'license_plate'
     except Exception as e:
         print(f"Erro ao carregar o arquivo: {e}")
         return []
 
 # Passo 2: Verificar se a placa detectada está cadastrada
-def check_plate_registration(plate_text, registered_plates):
+def check_plate_registration(plate_text, placas_registradas):
     """Verifica se a placa detectada está cadastrada."""
-    return plate_text in registered_plates
+    return plate_text in placas_registradas
 
 

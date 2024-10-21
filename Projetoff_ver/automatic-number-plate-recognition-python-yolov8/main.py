@@ -11,17 +11,17 @@ results = {}
 mot_tracker = Sort()
 
 # Exemplo de uso na parte do seu código onde as placas são detectadas
-registered_plates = load_registered_plates('C:\\Users\\Yasmin Pereira\\Desktop\\planilha.csv')
+placas_registradas = load_registered_plates('C:\\Users\\12265587630\\Desktop\\planilha.csv')
 
 # Carregar os modelos
-coco_model = YOLO('yolov8n.pt')
-license_plate_detector = YOLO("C:\\Users\\Yasmin Pereira\\Desktop\\train3\\weights\\best.pt")
-
+detector_carro = YOLO('yolov8n.pt')
+detector_placa = YOLO("C:\\Users\\12265587630\\Desktop\\train3\\weights\\best.pt")
 # Carregar vídeo
-cap = cv2.VideoCapture("C:\\Users\\Yasmin Pereira\\Desktop\\ow.mp4")
+cap = cv2.VideoCapture("C:\\Users\\12265587630\\Desktop\\teste.mp4")
 
-vehicles = [2, 3, 5, 7]  # Definir as classes de veículos (ex: carro, caminhão, etc.)
-min_confidence = 0.2  # Confiança mínima para detecção
+veiculos = [2, 3, 5, 7]  # Definir as classes de veículos (ex: carro, caminhão, etc.)
+confianca_detectar_carro = 0.2  # Confiança mínima para detecção
+confianca_gravar_texto = 0.2
 frame_nmr = -1
 ret = True
 
@@ -40,11 +40,11 @@ while ret:
     results[frame_nmr] = {}
 
     # Detecção de veículos usando o modelo de veículos
-    detections_veiculos = coco_model(frame)[0]
+    detections_veiculos = detector_carro(frame)[0]
     veiculos_detectados = []
     for detection in detections_veiculos.boxes.data.tolist():
         x1, y1, x2, y2, score, class_id = detection
-        if score >= min_confidence and int(class_id) in vehicles:
+        if score >= confianca_detectar_carro and int(class_id) in veiculos:
             veiculos_detectados.append([x1, y1, x2, y2, score])
     print(f"Frame {frame_nmr} - Veículos detectados: {veiculos_detectados}")
 
@@ -56,21 +56,21 @@ while ret:
         print(f"Frame {frame_nmr} - Nenhum veículo detectado")
 
     # Detecção de placas usando o modelo de placas
-    detections_placas = license_plate_detector(frame)[0]
+    detections_placas = detector_placa(frame)[0]
     placas_detectadas = []
     for detection in detections_placas.boxes.data.tolist():
         x1, y1, x2, y2, score, class_id = detection
-        if score >= min_confidence:
+        if score >= confianca_detectar_carro:
             placas_detectadas.append([x1, y1, x2, y2, score])
     print(f"Frame {frame_nmr} - Placas detectadas: {placas_detectadas}")
 
     # Atribuir as placas aos veículos detectados
-    for license_plate in placas_detectadas:
-        x1, y1, x2, y2, score = license_plate
+    for placa in placas_detectadas:
+        x1, y1, x2, y2, score = placa
         print(f"Placa detectada no frame {frame_nmr} com coordenadas: ({x1}, {y1}), ({x2}, {y2}) e confiança {score}")
 
         # Verificar qual veículo corresponde à placa
-        xcar1, ycar1, xcar2, ycar2, car_id = get_car(license_plate, track_ids)
+        xcar1, ycar1, xcar2, ycar2, car_id = get_car(placa, track_ids)
 
         if car_id != -1:
             # Verificação de limites
@@ -85,16 +85,16 @@ while ret:
                 license_plate_text, license_plate_text_score = read_license_plate(license_plate_crop_thresh)
                 print(f"Texto da placa detectado: {license_plate_text}, Confiança: {license_plate_text_score}")
 
-                if license_plate_text is not None:
+                if license_plate_text is not None and license_plate_text_score > confianca_gravar_texto:
                     # Verificar se a placa já está registrada
-                    if license_plate_text in registered_plates:
+                    if license_plate_text in placas_registradas:
                         print(f"A placa {license_plate_text} já está registrada.")
                     else:
                         print(f"A placa {license_plate_text} não está registrada.")
 
                     results[frame_nmr][car_id] = {
                         'car': {'bbox': [xcar1, ycar1, xcar2, ycar2]},
-                        'license_plate': {
+                        'placa': {
                             'bbox': [x1, y1, x2, y2],
                             'text': license_plate_text,
                             'bbox_score': score,
@@ -134,7 +134,7 @@ while ret:
 
 # Escrever os resultados no CSV
 print("Resultados finais antes de salvar no CSV:", results)
-write_csv(results, 'C:\\Users\\Yasmin Pereira\\Desktop\\Projetoff-mat - droid\\test.csv')
+write_csv(results, 'C:\\Users\\12265587630\\Desktop\\Projetoff_ver\\test.csv')
 
 # Fechar o vídeo
 cap.release()
