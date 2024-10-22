@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import keyboard  
 
 from sort.sort import Sort
-from util import get_car, read_license_plate, write_csv, check_plate_registration, carrega_placas_registradas
+from util import get_car, read_license_plate, write_csv, check_plate_registration, carrega_placas_registradas,read_license_plate_tesseract
 
 results = {}
 mot_tracker = Sort()
@@ -15,14 +15,14 @@ placas_registradas = carrega_placas_registradas('C:\\Users\\12265587630\\Desktop
 
 # Carregar os modelos
 detector_carro = YOLO('yolov8n.pt')
-detector_placa = YOLO("C:\\Users\\12265587630\\Desktop\\train3\\weights\\best.pt")
+detector_placa = YOLO("C:\\Users\\12265587630\\Desktop\\best (4).pt")
 # Carregar vídeo
-cap = cv2.VideoCapture("C:\\Users\\12265587630\\Desktop\\teste.mp4")
+cap = cv2.VideoCapture("C:\\Users\\12265587630\\Desktop\\teste2.mp4")
 # 0: person 1: bicycle 2: car 3: motorcycle 4: airplane 5: bus 6: train 7: truck 8: boat 9: traffic light 10 : fire hydrant
 
 veiculos = [2, 3, 5, 7]  # Definir as classes de veículos (ex: carro, caminhão, etc.)
-confianca_detectar_carro = 0.2  # Confiança mínima para detecção
-confianca_gravar_texto = 0.2
+confianca_detectar_carro = 0.0  # Confiança mínima para detecção
+confianca_gravar_texto = 0.0
 maior_confianca = 0.0
 frame_nmr = -1
 ret = True
@@ -87,8 +87,8 @@ while ret:
                 license_plate_text, license_plate_text_score = read_license_plate(license_plate_crop_thresh)
                 print(f"Texto da placa detectado: {license_plate_text}, Confiança: {license_plate_text_score}")
 
-                if license_plate_text is not None and license_plate_text_score > confianca_gravar_texto and license_plate_text_score > maior_confianca :
-                    maior_confianca = license_plate_text_score
+                if license_plate_text is not None and license_plate_text_score > confianca_gravar_texto  :
+                    # maior_confianca = license_plate_text_score
                     # Verificar se a placa já está registrada
                     if license_plate_text in placas_registradas:
                         info = placas_registradas[license_plate_text]
@@ -107,7 +107,7 @@ while ret:
                         }
                     }
                 else:
-                    print("Nenhuma placa reconhecida.")
+                    print("Nenhuma placa reconhecida ou nível de confiança inferior aos anteriores.")
             else:
                 print(f"Coordenadas de recorte fora dos limites: ({x1}, {y1}), ({x2}, {y2})")
         else:
